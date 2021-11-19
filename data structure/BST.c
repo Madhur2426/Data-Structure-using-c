@@ -1,70 +1,145 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<conio.h>
-struct bst
+struct BST
 {
-    int data;
-    struct bst *left;
-    struct bst *right;
+    struct BST*left;
+    int item;
+    struct BST*right;
 };
-struct bst* create()
+void del(struct BST **r, int data)
 {
- struct bst* p;
- p=(struct bst*)malloc(sizeof(struct bst));
- printf("ENTER DATA \n");
- scanf("%d",&p->data);
- p->left=NULL;
- p->right=NULL;
-}
-void del(struct bst**root,int data)
-{
-    struct bst *p,*ptr;
-    if(*root==NULL)
-        printf("\n TREE IS EMPTY \n");
-}
-void insert(struct bst **root)
-{
-    struct bst *r;
-    struct bst *p=create();
-    if(*root==NULL)
-       {
-           *root=p;
-       }
-       else
-       {
-           r=*root;
-           while(1)
-           {
-            if(r->data==p->data)
+    struct BST *ptr,*parptr,*pred,*parpred;
+    if(*r==NULL)
+        printf("Underflow");
+    else{
+        parptr=NULL;
+        ptr=*r;
+        while(ptr->item!=data&&ptr!=NULL)
+        {
+            if(ptr->item>data)
             {
-                printf("\n DUPLICATE VALUE \n");
-                free(p);
-                break;
-            }
-         else if(r->data>p->data)
-         {
-            if(r->left==NULL)
-            {
-                r->left=p;
-                break;
+                parptr=ptr;
+                ptr=ptr->left;
             }
             else
-                r=r->left;
-         }
-         else
-         {
-             if(r->right==NULL)
-             {
-                 r->right=p;
-                 break;
-             }
-             else
-                r=r->right;
-         }
-       }
+            {
+                parptr=ptr;
+                ptr=ptr->right;
+            }
+        }
+        if(ptr==NULL)
+            printf("Data not found");
+        else
+        {
+            if(ptr->left==NULL && ptr->right==NULL)
+            {
+                if(parptr==NULL)
+                    *r=NULL;
+                else if(ptr==parptr->left)
+                    parptr->left=NULL;
+                else
+                    parptr->right=NULL;
+                free(ptr);
+            }
+            else if(ptr->left==NULL||ptr->right==NULL)
+            {
+                if(parptr==NULL)
+                {
+                    if(ptr->left!=NULL)
+                        *r=ptr->left;
+                    else
+                        *r=ptr->right;
+                }
+                else if(ptr==parptr->left)
+                {
+                    if(ptr->left!=NULL)
+                        parptr->left=ptr->left;
+                    else
+                        parptr->left=ptr->right;
+                }
+                else
+                {
+                    if(ptr->left!=NULL)
+                        parptr->right=ptr->left;
+                    else
+                        parptr->right=ptr->right;
+                }
+                free(ptr);
+            }
+            else
+            {
+                pred=ptr->left;
+                parpred=ptr;
+
+                while(pred->right!=NULL)
+                {
+                    parpred=pred;
+                    pred=pred->right;
+                }
+                ptr->item=pred->item;
+                if(pred==parpred->left)
+                {
+                    parpred->left=pred->left;
+                }
+                else
+                {
+                    parpred->right=pred->left;
+                }
+                free(pred);
+            }
+        }
+    }
 }
+void insert(struct BST **r,int data)
+{
+    struct BST* n,*ptr;
+    n=(struct BST*)malloc(sizeof(struct BST));
+    n->item=data;
+    n->left=NULL;
+    n->right=NULL;
+
+    if(*r==NULL)
+        *r=n;
+    else
+    {
+        ptr=*r;
+        while(1)
+        {
+            if(ptr->item==data)
+            {
+                printf("Duplicate items cannot be inserted");
+                free(n);
+                break;
+                //duplicate data
+            }
+            else if(ptr->item>data)
+            {
+                if(ptr->left==NULL)
+                {
+                    ptr->left=n;
+                    break;
+                }
+                else
+                    ptr=ptr->left;
+                //insert in left sub tree
+            }
+            else
+            {
+                if(ptr->right==NULL)
+                {
+                    ptr->right=n;
+                    break;
+                }
+                else
+                    ptr=ptr->right;
+                //insert in right sub tree
+            }
+        }
+    }
+
 }
-void postorder(struct bst *root)
+void postorder(struct BST *root)
 {
     if(root!=NULL)
     {
@@ -72,31 +147,32 @@ void postorder(struct bst *root)
             postorder(root->left);
         if(root->right!=NULL)
             postorder(root->right);
-        printf("%d ",root->data);
+        printf("%d ",root->item);
     }
 }
-void inorder(struct bst *root)
+void inorder(struct BST *root)
 {
     if(root!=NULL)
     {
         if(root->left!=NULL)
             inorder(root->left);
-        printf("%d ",root->data);
+        printf("%d ",root->item);
         if(root->right!=NULL)
             inorder(root->right);
     }
 }
-void preorder(struct bst *root)
+void preorder(struct BST *root)
 {
     if(root!=NULL)
     {
-        printf("%d ",root->data);
+        printf("%d ",root->item);
         if(root->left!=NULL)
             preorder(root->left);
         if(root->right!=NULL)
             preorder(root->right);
     }
 }
+
 int choice()
 {
     int choice;
@@ -112,8 +188,8 @@ int choice()
 }
 void main()
 {
-    int c,remove;
-    struct bst *root=NULL;
+    int c,remove,data;
+    struct BST *root=NULL;
    while(1)
    {
     system("cls");
@@ -121,7 +197,9 @@ void main()
    switch(c)
    {
        case 1:
-            insert(&root);
+            printf("\n ENTER DATA TO BE INSERTED \n");
+            scanf("%d",&data);
+            insert(&root,data);
             printf("\nENTER ANY KEY TO CONTINUE\n");
            break;
        case 2:
