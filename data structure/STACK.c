@@ -27,7 +27,7 @@ void push(struct stack *s,int data)
 
     }
 }
-int pop(struct stack *s)
+void pop(struct stack *s)
 {
     int del;
     if(s->top==-1)
@@ -36,20 +36,21 @@ int pop(struct stack *s)
     {
         del=s->array[s->top];
         s->top--;
-    return(del);
+    printf("%d POPPED \n",del);
 }
 }
 void main()
 {
-    int p,q,r;
+    int p,q,r,s,t;
    struct stack* g;
    g=create(4);
    push(g,1);
    push(g,2);
    push(g,3);
    push(g,4);
-   p=pop(g);
-   q=pop(g);
-   r=pop(g);
-   printf("\n THE POPED ELEMENT IS %d %d %d\n",p,q,r);
+   pop(g);
+   pop(g);
+   pop(g);
+   pop(g);
+   pop(g);
 }
