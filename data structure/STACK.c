@@ -22,18 +22,21 @@ void push(struct stack *s,int data)
         printf("\n STACK OVERFLOW \n");
     else
     {
+         s->top++;
         s->array[s->top]=data;
-        s->top++;
+
     }
 }
 int pop(struct stack *s)
 {
+    int del;
     if(s->top==-1)
         printf("\n UNDERFLOW \n");
     else
     {
+        del=s->array[s->top];
         s->top--;
-    return(s->array[s->top]);
+    return(del);
 }
 }
 void main()
