@@ -21,25 +21,17 @@ q->capacity=cap;
 q->arr=(int*)malloc(sizeof (int)*cap);
 return(q);
 }
-int isfull(struct queue *q)
-{
-    return((q->rear+1)%q->capacity==q->front);
-}
-int isempty(struct queue *q)
-{
-    return(q->front==-1);
-}
 void insert(struct queue *q)
 {
     int x;
     if(q->capacity<0)
     printf("\n INVALID CAPACITY \n");
-   else if(isfull(q))
+   else if(q->rear==q->capacity-1)
         printf("\n queue is full \n");
    else{
     printf("\n enter data \n");
     scanf("%d",&x);
-    q->rear = (q->rear + 1)% q->capacity;
+    q->rear++;
     q->arr[q->rear] = x;
     if(q->front==-1)
     q->front=q->rear;
@@ -48,7 +40,7 @@ void insert(struct queue *q)
 int dequeue(struct queue *q)
 {
     int del;
-    if(isempty(q))
+    if(q->front==-1||q->rear==-1)
        {
            printf("\n QUEUE IS EMPTY \n");
            return(-9999);
@@ -59,30 +51,28 @@ int dequeue(struct queue *q)
     if(q->front==q->rear)
         q->front=q->rear=-1;
     else
-        q->front=(q->front+1)%q->capacity;
+        q->front++;
     }
     return(del);
 }
   void queueDisplay(struct queue *q)
-    {
-        int i;
-        if (isempty(q))
-            printf("\nQueue is Empty\n");
-        else if(q->rear>=q->front)
-        {
-        for (i=q->front;i<=q->rear;i++)
-            printf(" %d \t", q->arr[i]);
-    }
+{
+    int i;
+    if(q->front==-1)
+        printf("\n QUEUE IS EMPTY \n");
     else
     {
-        if(q->rear<q->front){
-            for(i=0;i<=q->rear;i++)
-                printf("%d \t",q->arr[i]);
-        }
-        for(int i=q->front;i<=q->capacity-1;i++)
+        for(i=q->front;i!=q->rear;)
+        {
             printf("%d \t",q->arr[i]);
+            if(i==q->capacity-1)
+                i=0;
+            else
+                i++;
+        }
+        printf("%d",q->arr[i]);
     }
-    }
+}
 int menu()
 {
     int choice;
